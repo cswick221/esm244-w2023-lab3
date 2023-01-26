@@ -1,0 +1,100 @@
+---
+title: "Lab 3"
+author: "Chloe Swick"
+date: "2023-01-26"
+output: html_document
+---
+
+```{r setup, include=TRUE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(tidymodels)
+library(palmerpenguins)
+library(GGally)
+library(jtools)
+library(AICcmodavg)
+```
+
+# Pseudocode 
+
+* examine our data, tables, summary stats 
+* identify a question 
+* wrangle data if necessary 
+* identify some candidate models 
+* select among candidates models using AIC/BIC 
+* select among candidate models using k-fold cross validation 
+* select among candidate models using area under receiver operating characteristic curve 
+
+
+```{r}
+GGally::ggpairs(penguins %>% select(species, bill_length_mm:sex),
+                aes(color = species))
+## quick way to look at information about data
+```
+
+```{r}
+class(penguins$species)
+levels(penguins$species)
+```
+
+```{r}
+adelie_chinstrap <- penguins %>% 
+  filter(species %in% c('Adelie', 'Chinstrap')) %>% 
+  mutate(species = fct_drop(species)) %>% 
+  select(-year) %>% 
+  drop_na()
+levels(adelie_chinstrap$species)
+```
+
+
+== means a match, when using with a vector, it matches the pattern as well 
+%in% means a match to either or any of the items in vector 
+
+
+```{r}
+ggplot(data = adelie_chinstrap, aes(x = body_mass_g, y = flipper_length_mm))+
+  geom_point(aes(color = sex, shape = island)) +
+  facet_wrap(~species)
+
+ggplot(data = adelie_chinstrap, aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point(aes(color = sex, shape = island)) +
+  facet_wrap(~species) # facet_wrap makes two different graphs per how many categoeries of the vairable you choose, in this example, we have a plot of adelie, and a plot for chinstrap 
+```
+
+# for fun 
+```{r}
+ggplot(data = adelie_chinstrap, aes(x = body_mass_g, y = bill_length_mm)) +
+  geom_point(aes(color = sex, shape = species)) +
+  facet_wrap(~island)
+```
+
+
+
+# binary logistic regression 
+```{r}
+f1 <- species ~ body_mass_g + flipper_length_mm + sex 
+
+ad_chin_blr1 <- glm(formula = f1, data = adelie_chinstrap, 
+                    family = 'binomial')
+ad_chin_blr1
+summary(ad_chin_blr1)
+
+blr1_tidy <- tidy(ad_chin_blr1) # creates a table of summary statistics 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
