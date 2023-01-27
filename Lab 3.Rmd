@@ -426,6 +426,8 @@ blr_f2_pred %>%
 x is false positives 
 and y is true positives 
 
+model that follows diagonal line is no better at predicting than randomness 
+
 # End Part 1
 
 
